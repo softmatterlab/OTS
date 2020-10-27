@@ -34,6 +34,10 @@ classdef OTCalibPotential < OTCalib
     %
     % See also OTCalib, OTCalibEquipartition, OTCalibACF, OTCalibMSD, OTCalibPSD.
 
+    %   Author: Giovanni Volpe
+    %   Revision: 1.0.0
+    %   Date: 2015/01/01
+
     properties
         binscenters % bins centers [m]
         p_vec       % position histogram vector [count]

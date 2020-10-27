@@ -41,6 +41,11 @@ classdef DVM2DGauss < DVM
     %   Revision: 1.0.0
     %   Date: 2015/01/01
     
+    %   Author: Giovanni Volpe
+    %   Revision 1.0.1
+    %   Date: 2016/08/01
+    %   line 168 - corrected bug (identified by Giuseppe Pesce)
+
     properties
         ColorChannel        % color channel
         Imin                % global intensity minimum
@@ -159,20 +164,26 @@ classdef DVM2DGauss < DVM
                 Y = dvm.Positions(i).Y;
                 Area = dvm.Positions(i).Area;
                 for j = 1:1:length(Trace)
-                    Distance = sqrt( (X-Trace(j).X(end)).^2 + (Y-Trace(j).Y(end)).^2 );
-                    MinDistanceIndex = find(Distance==min(Distance));
-                    if (length(MinDistanceIndex)>0)
-                        MinDistanceIndex = MinDistanceIndex(1);
-                        if (Distance(MinDistanceIndex)<dvm.MaxDistance)
-                            Trace(j).T = [Trace(j).T (i-1)];
-                            Trace(j).X = [Trace(j).X X(MinDistanceIndex)];
-                            Trace(j).Y = [Trace(j).Y Y(MinDistanceIndex)];
-                            Trace(j).Area = [Trace(j).Area Area(MinDistanceIndex)];
-                            X(MinDistanceIndex) = Inf;
-                            Y(MinDistanceIndex) = Inf;
-                            Area(MinDistanceIndex) = Inf;
+
+                    if Trace(j).T(end)==i-2  % V 1.0.1
+
+                        Distance = sqrt( (X-Trace(j).X(end)).^2 + (Y-Trace(j).Y(end)).^2 );
+                        MinDistanceIndex = find(Distance==min(Distance));
+                        if (length(MinDistanceIndex)>0)
+                            MinDistanceIndex = MinDistanceIndex(1);
+                            if (Distance(MinDistanceIndex)<dvm.MaxDistance)
+                                Trace(j).T = [Trace(j).T (i-1)];
+                                Trace(j).X = [Trace(j).X X(MinDistanceIndex)];
+                                Trace(j).Y = [Trace(j).Y Y(MinDistanceIndex)];
+                                Trace(j).Area = [Trace(j).Area Area(MinDistanceIndex)];
+                                X(MinDistanceIndex) = Inf;
+                                Y(MinDistanceIndex) = Inf;
+                                Area(MinDistanceIndex) = Inf;
+                            end
                         end
-                    end
+                        
+                    end  % V 1.0.1
+                    
                 end
                 for k = 1:1:length(X)
                     if (X(k)<Inf && Y(k)<Inf && Area(k)<Inf)
@@ -451,7 +462,7 @@ classdef DVM2DGauss < DVM
             % and position corrections epsx, epsy
             for ipart=1:npart
                 epsx = 1; epsy = 1; nloops=0;
-                while abs(epsx)>0.5 || abs(epsy)>0.5 || nloops>100
+                while (abs(epsx)>0.5 || abs(epsy)>0.5) && (nloops<100)
                     
                     nloops=nloops+1;
                     

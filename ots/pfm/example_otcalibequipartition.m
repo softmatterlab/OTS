@@ -7,7 +7,7 @@
 %   Date: 2015/01/01
 
 clear all; close all; clc;
-
+ 
 load('1D.mat')
 
 Sx = 1;

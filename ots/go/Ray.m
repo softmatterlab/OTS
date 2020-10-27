@@ -333,9 +333,9 @@ classdef Ray
                 dtheta(r3.v.Z<0) = -dtheta(r3.v.Z<0);
                 r_r3 = -r3.xrotation(dtheta);
 
-                r_r3.pol.Vx = abs(rs.*r_r3.pol.Vx);
-                r_r3.pol.Vy = abs(rp.*r_r3.pol.Vy);
-                r_r3.pol.Vz = abs(rp.*r_r3.pol.Vz);
+                r_r3.pol.Vx = rs.*r_r3.pol.Vx;      % r_r3.pol.Vx = abs(rs.*r_r3.pol.Vx);  % Change by Masoumeh and Agnese 2015-11-23
+                r_r3.pol.Vy = rp.*r_r3.pol.Vy;      % r_r3.pol.Vy = abs(rp.*r_r3.pol.Vy);  % Change by Masoumeh and Agnese 2015-11-23
+                r_r3.pol.Vz = rp.*r_r3.pol.Vz;      % r_r3.pol.Vz = abs(rp.*r_r3.pol.Vz);  % Change by Masoumeh and Agnese 2015-11-23
 
                 cs = (r3.pol.Vx.^2)./r3.pol.norm().^2;
                 cp = (r3.pol.Vy.^2+r3.pol.Vz.^2)./r3.pol.norm().^2;
@@ -426,7 +426,10 @@ classdef Ray
                 % pf = p6.translate(p); %
                 r_r = r_r6.translate(p);
                 r_t = r_t6.translate(p);
-            
+
+                r_r.pol = r_r.pol.normalize();    % Change by Masoumeh and Agnese 2015-11-23
+                r_t.pol = r_t.pol.normalize();    % Change by Masoumeh and Agnese 2015-11-23
+                
             elseif isa(s,'Superficies')
                 % intersection between ray and sphere
                 p = s.intersectionpoint(r,n);

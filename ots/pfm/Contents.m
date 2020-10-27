@@ -19,7 +19,7 @@
 %
 % See also OTS.
 
-%   Author: Giuseppe Pesce, Giovanni Volpe
+%   Author: Giovanni Volpe
 %   Revision: 1.0.0
 %   Date: 2015/01/01
 

@@ -41,6 +41,10 @@ classdef OTCalibPSD < OTCalib
     %
     % See also OTCalib, OTCalibPotential, OTCalibEquipartition, OTCalibACF, OTCalibMSD.
     
+    %   Author: Giovanni Volpe
+    %   Revision: 1.0.0
+    %   Date: 2015/01/01
+
     properties
         psd  % PSD
         f  % frequency

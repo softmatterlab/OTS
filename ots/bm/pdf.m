@@ -18,6 +18,11 @@ function [p,binscenters,p_err,p_vec] = pdf(Vx,varargin)
 %   Revision: 1.0.0  
 %   Date: 2015/01/01
 
+%   Author: Giovanni Volpe
+%   Revision 1.0.1
+%   Date: 2016/08/01
+%   lines 40-44 - corrected bug (identified by Mark Cronin-Golomb)
+
 % Number of Bins
 binsnumber = 50;
 for n = 1:2:length(varargin)
@@ -36,6 +41,12 @@ for n = 1:2:length(varargin)
 end
 
 % Analysis
-p_vec = hist(Vx,binscenters);   
-p = mean(p_vec,2);
-p_err = std(p_vec,0,2);
+p_vec = hist(Vx,binscenters);
+% START CHANGE v1.0.1
+if size(p_vec,1)==1
+    p_vec = p_vec';
+end
+% END CHANGE
+p = mean(p_vec,2)
+p_err = std(p_vec,0,2)
+    

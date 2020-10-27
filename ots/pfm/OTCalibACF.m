@@ -39,6 +39,10 @@ classdef OTCalibACF < OTCalib
     %
     % See also OTCalib, OTCalibPotential, OTCalibEquipartition, OTCalibMSD, OTCalibPSD.
 
+    %   Author: Giovanni Volpe
+    %   Revision: 1.0.0
+    %   Date: 2015/01/01
+
     properties
         acf_vec  % ACF vector
         tau  % delay times

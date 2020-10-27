@@ -43,6 +43,10 @@ classdef OTCalibEquipartition < OTCalibPotential
     %
     % See also OTCalib, OTCalibPotential, OTCalibACF, OTCalibMSD, OTCalibPSD.
 
+    %   Author: Giovanni Volpe
+    %   Revision: 1.0.0
+    %   Date: 2015/01/01
+
     properties
         xeq_vec     % equilibrium position vector [m]
         xeq         % equilibrium position [m]

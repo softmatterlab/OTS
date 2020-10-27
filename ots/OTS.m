@@ -1,5 +1,5 @@
 % Optical Tweezers Software
-% Version 1.0.0
+% Version 1.0.1
 %
 % This script loads all packages of the Optical Tweezers Software.
 %
@@ -18,8 +18,8 @@
 %   <a href="matlab:help hot">hot</a>         - (folder) : Holographic Optical Tweezers
 
 %   Author: Giovanni Volpe
-%   Revision: 1.0.0  
-%   Date: 2015/01/01
+%   Revision: 1.0.1 
+%   Date: 2016/08/01
 
 clc
 
@@ -29,7 +29,7 @@ addpath(cd)
 
 fprintf('\n')
 fprintf('Optical Tweezers Software\n')
-fprintf('version 0.6.0\n')
+fprintf('version 1.0.0\n')
 fprintf('\n')
 
 fprintf('loading <a href="matlab:help utility">utility</a> - general utility functions ...\n')

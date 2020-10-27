@@ -3,9 +3,9 @@ function [c,d,nc,nd,binscenter,binswidth] = driffusion(dt,x,varargin)
 %
 % [C,D,NC,ND,BC,BW] = DRIFFUSION(DT,VX) calculates the drift C and diffusion D 
 %   of signal VX sampled at time intervals DT.
-%   VX can be a matrix containing several signals (one per row, all the same length).
-%   NC are the numebr of sampels per bin used to calcualte the drift.
-%   ND are the numebr of sampels per bin used to calcualte the diffusion.
+%   VX can be a matrix containing several signals (one per COLUMN, all the same length).
+%   NC are the number of sampels per bin used to calculate the drift.
+%   ND are the number of sampels per bin used to calculate the diffusion.
 %   BC are the bins centers.
 %   BW are the bins width.
 %
@@ -22,6 +22,11 @@ function [c,d,nc,nd,binscenter,binswidth] = driffusion(dt,x,varargin)
 %   Author: Giovanni Volpe
 %   Revision: 1.0.0  
 %   Date: 2015/01/01
+
+%   Author: Giovanni Volpe
+%   Revision 1.0.1
+%   Date: 2016/08/01
+%   lines 82-86 & 107-112 - corrected bug (addition by Agnese Callegari)
 
 % Delay
 delay = 1;
@@ -79,8 +84,10 @@ end
 
 % Analysis
 if (delayc==delayd)
-    x0 = x(1:end-delay); % initial states
-    dx = x(delay+1:end) - x(1:end-delay); % displacements
+    % START CHANGE v1.0.1
+    x0 = x(1:end-delay,:); % initial states
+    dx = x(delay+1:end,:) - x(1:end-delay,:); % displacements
+    % END CHANGE
 
     c = zeros(size(binscenter));
     d = zeros(size(binscenter));
@@ -102,10 +109,12 @@ if (delayc==delayd)
         nd(bin) = length(cdisplacements);
     end
 else
-    x0c = x(1:end-delayc); % initial states drift
-    dxc = x(delayc+1:end) - x(1:end-delayc); % displacements drift
-    x0d = x(1:end-delayd); % initial states diffusion
-    dxd = x(delayd+1:end) - x(1:end-delayd); % displacements diffusion
+    % START CHANGE v1.0.1
+    x0c = x(1:end-delayc,:); % initial states drift
+    dxc = x(delayc+1:end,:) - x(1:end-delayc,:); % displacements drift
+    x0d = x(1:end-delayd,:); % initial states diffusion
+    dxd = x(delayd+1:end,:) - x(1:end-delayd,:); % displacements diffusion
+    % END CHANGE
 
     c = zeros(size(binscenter));
     d = zeros(size(binscenter));

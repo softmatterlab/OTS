@@ -32,6 +32,10 @@ classdef OTCalib
     %
     % See also OTCalibPotential, OTCalibEquipartition, OTCalibACF, OTCalibMSD, OTCalibPSD.
 
+    %   Author: Giovanni Volpe
+    %   Revision: 1.0.0
+    %   Date: 2015/01/01
+
     properties
         x_sig   % 1D trajectory [a.u.]
         Sx      % conversion factor [m/a.u.]
