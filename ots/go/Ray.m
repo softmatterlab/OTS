@@ -538,7 +538,7 @@ classdef Ray
             dr = b.r(1,2)-b.r(1,1);
             dphi = b.phi(2,1)-b.phi(1,1);
             P = b.intensity().*b.r*dr*dphi;
-            P = [ P .* abs(Ex).^2 ./ (abs(Ex).^2+abs(Ey).^2); P .* abs(Ey).^2 ./ (abs(Ex).^2+abs(Ey).^2)];
+            P = [ P .* (real(Ex).^2 + real(Ey).^2) ./ (abs(Ex).^2+abs(Ey).^2); P .* (imag(Ex).^2 + imag(Ey).^2) ./ (abs(Ex).^2+abs(Ey).^2)];  % V 1.0.2
 
             res = Ray(v,P,pol);
         end

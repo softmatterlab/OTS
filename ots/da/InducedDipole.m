@@ -62,7 +62,7 @@ classdef InducedDipole < EField
             id.rd = Point(0,0,0);
             for n = 1:2:length(varargin)
                 if strcmpi(varargin{n},'rd')
-                    id.lambda0 = varargin{n+1};
+                    id.rd = varargin{n+1};  % V 1.0.2
                     Check.isa('The position of a dipole must be a Point',id.rd,'Point')
                 end
             end
