@@ -1,11 +1,11 @@
 classdef Ray
     % Ray : Set of rays in 3D
-    %   A ray is defined by its direction and point of application 
+    %   A ray is defined by its direction and point of application
     %   defined by the vector v and its power P. The polarization must be
     %   linear and is defined by the vector pol.
     %
     % Ray properties:
-    %   v       -   directions (Vector)   
+    %   v       -   directions (Vector)
     %   P       -   powers (matrix)
     %   pol     -   polarizations (Vector)
     %
@@ -31,9 +31,9 @@ classdef Ray
     %   rtcoeffp        -   Fresnel coefficient for p-polarization
     %   beam2rays       -   converts a beam to a ray set
     %   beam2focused    -   converts a beam to a focused ray set
-    %   
+    %
     % See also Vector, Beam.
-
+    
     %   Author: Giovanni Volpe
     %   Revision: 1.0.0
     %   Date: 2015/01/01
@@ -46,7 +46,7 @@ classdef Ray
     methods
         function obj = Ray(v,P,pol)
             % RAY(V,P,POL) constructs a set of rays
-            %   with directions and points of application defined by the 
+            %   with directions and points of application defined by the
             %   vector V, power defined by the scalar matrix P, and
             %   polarization defined by the vector POL.
             %   V, P and POL must have the same size.
@@ -71,23 +71,23 @@ classdef Ray
             % H = PLOT(R) plots the set of rays R in 3D. It returns a
             %   graphic handler to the plotted set of rays.
             %
-            % H = PLOT(R,'Scale',S) rescales the coordinates and components 
-            %   of the vectors v and pol by S before plotting them. 
+            % H = PLOT(R,'Scale',S) rescales the coordinates and components
+            %   of the vectors v and pol by S before plotting them.
             %
             % H = PLOT(R,'Scale',[S1 S2]) rescales the coordinates of the vectors v and pol
-            %   by S1 and its components by S2 before plotting them. 
+            %   by S1 and its components by S2 before plotting them.
             %
             % H = PLOT(R,'PropertyName',PropertyValue) sets the property
             %   PropertyName to PropertyValue. All standard plot properties
             %   can be used.
             %
             % See also Ray.
-
+            
             if ishold()
                 h = [r.v.plot(varargin{:}); r.pol.plot(varargin{:})];
             else
                 hold on
-                    h = [r.v.plot(varargin{:}); r.pol.plot(varargin{:})];
+                h = [r.v.plot(varargin{:}); r.pol.plot(varargin{:})];
                 hold off
             end
             
@@ -101,7 +101,7 @@ classdef Ray
             % DISP(R) prints the set of rays R.
             %
             % See also Ray.
-
+            
             disp(['<a href="matlab:help Ray">Ray</a> [' int2str(r.size(1)) ' x ' int2str(r.size(2)) '] : X Y Z Vx Vy Vz P Px Py Pz']);
             disp([reshape(r.v.X,1,r.numel());reshape(r.v.Y,1,r.numel());reshape(r.v.Z,1,r.numel()); ...
                 reshape(r.v.Vx,1,r.numel());reshape(r.v.Vy,1,r.numel());reshape(r.v.Vz,1,r.numel()); ...
@@ -118,9 +118,9 @@ classdef Ray
             %   components Vx, Vy and Vz.
             %
             % See also Ray, Point, Vector.
-
+            
             Check.isa('dP must be either a Point or a Vector',dp,'Point','Vector')
-
+            
             r_t = r;
             r_t.v = r.v.translate(dp);
             r_t.pol = r.pol.translate(dp);
@@ -128,13 +128,13 @@ classdef Ray
         function r_r = xrotation(r,phi)
             % XROTATION Rotation around x-axis of ray set
             %
-            % Rr = XROTATION(R,phi) rotates set of rays R around x-axis 
+            % Rr = XROTATION(R,phi) rotates set of rays R around x-axis
             %   by an angle phi [rad].
             %
             % See also Ray.
-
+            
             Check.isreal('The rotation angle phi must be a real number',phi)
-
+            
             r_r = r;
             r_r.v = r.v.xrotation(phi);
             r_r.pol = r.pol.xrotation(phi);
@@ -142,27 +142,27 @@ classdef Ray
         function r_r = yrotation(r,phi)
             % YROTATION Rotation around y-axis of ray set
             %
-            % Rr = YROTATION(R,phi) rotates set of rays R around y-axis 
+            % Rr = YROTATION(R,phi) rotates set of rays R around y-axis
             %   by an angle phi [rad].
             %
             % See also Ray.
-
+            
             Check.isreal('The rotation angle phi must be a real number',phi)
-
+            
             r_r = r;
             r_r.v = r.v.yrotation(phi);
-            r_r.pol = r.pol.yrotation(phi);            
+            r_r.pol = r.pol.yrotation(phi);
         end
         function r_r = zrotation(r,phi)
             % ZROTATION Rotation around z-axis of ray set
             %
-            % Rr = ZROTATION(R,phi) rotates set of rays R around z-axis 
+            % Rr = ZROTATION(R,phi) rotates set of rays R around z-axis
             %   by an angle phi [rad].
             %
             % See also Ray.
-
+            
             Check.isreal('The rotation angle phi must be a real number',phi)
-
+            
             r_r = r;
             r_r.v = r.v.zrotation(phi);
             r_r.pol = r.pol.zrotation(phi);
@@ -173,26 +173,26 @@ classdef Ray
             % N = NUMEL(R) number of rays in set R.
             %
             % See also Ray.
-
+            
             n = numel(r.v);
         end
         function s = size(r,varargin)
             % SIZE Size of the ray set
-            % 
-            % S = SIZE(R) returns a two-element row vector with the number 
+            %
+            % S = SIZE(R) returns a two-element row vector with the number
             %   of rows and columns in the ray set R.
             %
-            % S = SIZE(R,DIM) returns the length of the dimension specified 
+            % S = SIZE(R,DIM) returns the length of the dimension specified
             %   by the scalar DIM in the ray set R.
             %
             % See also Ray.
-
+            
             if length(varargin)>0
                 s = r.v.size(varargin{1});
             else
                 s = r.v.size();
             end
-        end        
+        end
         function r_p = uplus(r)
             % UPLUS Unitary plus
             %
@@ -200,7 +200,7 @@ classdef Ray
             %   +R = R
             %
             % See also Ray.
-
+            
             r_p = r;
         end
         function r_m = uminus(r)
@@ -211,7 +211,7 @@ classdef Ray
             %   The points of application and polarizations are left unchanged.
             %
             % See also Ray.
- 
+            
             r_m = r;
             r_m.v = -r_m.v;
         end
@@ -222,7 +222,7 @@ classdef Ray
             %   rays R1 and R2.
             %
             % See also Ray.
-
+            
             phi = angle(r1.v,r2.v);
         end
         function u = versor(r)
@@ -233,7 +233,7 @@ classdef Ray
             %   The coordinates of U are the points of application of R.
             %
             % See also Ray, Vector.
-
+            
             u = r.v.versor();
         end
         function ln = toline(r)
@@ -241,24 +241,25 @@ classdef Ray
             %
             % LN = TOLINE(R) converts the set of rays R into the set of
             %   lines LN. The coordinates X, Y and Z of the initial points
-            %   of the lines are the points of application of R and 
+            %   of the lines are the points of application of R and
             %   the coordinates of the final points are the sum of the coordiantes
             %   of the initial points and of the components of R.
             %
             % See also Ray, SLine.
-
+            
             ln = r.v.toline();
         end
-        function [r_r,r_t,perp] = snellslaw(r,s,n1,n2,n)
+        function [r_r,r_t,perp,theta_i,cs,cp] = snellslaw(r,s,n1,n2,n)
             % SNELLSLAW Snell's law: reflected and transmitted rays at a surface
             %
-            % [Rr,Rt,PERP] = SNELLSLAW(R,S,n1,n2) calculates the reflected
-            %   ray Rr, and the transmitted ray set Rt and the
-            %   perpendicular line set PERP for a ray set R incident to a
-            %   superficies S. n1 and n2 represents the refractive index
+            % [Rr,Rt,PERP,theta_i,cs,cp] = SNELLSLAW(R,S,n1,n2) calculates the reflected
+            %   ray Rr, and the transmitted ray set Rt, the
+            %   perpendicular line set PERP and the incidence angles THETA_I,
+            %   and the coefficients of the s- and p-components for a ray set R incident
+            %   to a superficies S. n1 and n2 represents the refractive index
             %   in the incoming medium and in the transmission medium.
             %
-            % [Rr,Rt,PERP] = SNELLSLAW(R,S,n1,n2,n) n [default = 1]
+            % [Rr,Rt,PERP,theta_i,cs,cp] = SNELLSLAW(R,S,n1,n2,n) n [default = 1]
             % 	defines what intersaction between the ray and the surface
             % 	should be used.
             %
@@ -271,7 +272,7 @@ classdef Ray
             Check.isnumeric('n1 must be a number',n1)
             Check.isnumeric('n2 must be a number',n2)
             Check.isinteger('n must be a positive integer',n,'>',0)
-
+            
             if isa(s,'Plane')
                 pl = s;
                 % intersection between ray and plane
@@ -279,68 +280,50 @@ classdef Ray
                 
                 % normal line
                 perp = pl.perpline(p);
-                                
+                
                 % Incidence angle
                 theta_i = angle(r.toline(),perp);
-                % if theta_i>pi/2
-                %     theta_i = pi - theta_i;
-                % end
                 theta_i(theta_i>pi/2) = -theta_i(theta_i>pi/2) + pi;
                 
                 % Transmission angle
                 theta_t = asin(n1/n2*sin(theta_i));
-               
+                
                 % translation to origin (0)
                 r0 = r.translate(-p);
-                % pl0 = pl.translate(-p); %
                 perp0 = perp.translate(-p);
-                % p0 = p.translate(-p); %
                 
                 % rotation around z (1)
                 phi1 = atan2(perp0.p2.X,perp0.p2.Y);
                 r1 = r0.zrotation(phi1);
-                % pl1 = pl0.zrotation(phi1); %
                 perp1 = perp0.zrotation(phi1);
-                % p1 = p0.zrotation(phi1); %
                 
                 % rotation around x (2)
                 phi2 = atan2(perp1.p2.Y,perp1.p2.Z);
                 r2 = r1.xrotation(phi2);
-                % pl2 = pl1.xrotation(phi2); %
-                % perp2 = perp1.xrotation(phi2); %
-                % p2 = p1.xrotation(phi2); %
                 
                 % rotation around z (3)
                 phi3 = atan2(r2.v.X,r2.v.Y);
                 r3 = r2.zrotation(phi3);
-                % pl3 = pl2.zrotation(phi3); %
-                % perp3 = perp2.zrotation(phi3); %
-                % p3 = p2.zrotation(phi3); %
                 
                 % Rs and Ts (applies to r3.pol.Vx)
                 [Rs,Ts,rs,ts] = Ray.rtcoeffs(theta_i,n1,n2);
-
+                
                 % Rp and Tp (r3.pol.Vy and Vz)
                 [Rp,Tp,rp,tp] = Ray.rtcoeffp(theta_i,n1,n2);
-
+                
                 % reflected ray
-                % if r3.v.Z>0
-                %     r_r3 = -r3.xrotation(2*theta_i);
-                % else
-                %     r_r3 = -r3.xrotation(-2*theta_i);
-                % end
                 dtheta = 2*theta_i;
                 dtheta(r3.v.Z<0) = -dtheta(r3.v.Z<0);
                 r_r3 = -r3.xrotation(dtheta);
-
+                
                 r_r3.pol.Vx = rs.*r_r3.pol.Vx;      % r_r3.pol.Vx = abs(rs.*r_r3.pol.Vx);  % Change by Masoumeh and Agnese 2015-11-23
                 r_r3.pol.Vy = rp.*r_r3.pol.Vy;      % r_r3.pol.Vy = abs(rp.*r_r3.pol.Vy);  % Change by Masoumeh and Agnese 2015-11-23
                 r_r3.pol.Vz = rp.*r_r3.pol.Vz;      % r_r3.pol.Vz = abs(rp.*r_r3.pol.Vz);  % Change by Masoumeh and Agnese 2015-11-23
-
+                
                 cs = (r3.pol.Vx.^2)./r3.pol.norm().^2;
                 cp = (r3.pol.Vy.^2+r3.pol.Vz.^2)./r3.pol.norm().^2;
                 R = cs.*Rs+cp.*Rp;
-
+                
                 r_r3.v.X = zeros(size(r));
                 r_r3.v.Y = zeros(size(r));
                 r_r3.v.Z = zeros(size(r));
@@ -348,29 +331,20 @@ classdef Ray
                 r_r3.pol.X = zeros(size(r));
                 r_r3.pol.Y = zeros(size(r));
                 r_r3.pol.Z = zeros(size(r));
-
+                
                 % transmitted ray
-                % if r3.v.Z>0
-                %     r_t3 = -r3.xrotation(-pi+theta_i-theta_t);
-                %     r_t3.pol.Vy = -r_t3.pol.Vy;
-                %     r_t3.pol.Vz = -r_t3.pol.Vz;
-                % else
-                %     r_t3 = -r3.xrotation(pi-theta_i+theta_t);
-                %     r_t3.pol.Vy = -r_t3.pol.Vy;
-                %     r_t3.pol.Vz = -r_t3.pol.Vz;
-                % end
                 dtheta = -pi+theta_i-theta_t;
                 dtheta(r3.v.Z<0) = -dtheta(r3.v.Z<0);
                 r_t3 = -r3.xrotation(real(dtheta));
                 r_t3.pol.Vy = -r_t3.pol.Vy;
                 r_t3.pol.Vz = -r_t3.pol.Vz;
-
+                
                 r_t3.pol.Vx = ts.*r_t3.pol.Vx;
                 r_t3.pol.Vy = tp.*r_t3.pol.Vy;
                 r_t3.pol.Vz = tp.*r_t3.pol.Vz;
-
+                
                 T = 1-R;
-
+                
                 r_t3.v.X = zeros(size(r));
                 r_t3.v.Y = zeros(size(r));
                 r_t3.v.Z = zeros(size(r));
@@ -381,12 +355,12 @@ classdef Ray
                 
                 % Manages TIR
                 tir = imag(theta_t)~=0;
-
+                
                 r_r3.P(tir) = r.P(tir);
                 r_r3.pol.Vx(tir) = abs(r_r3.pol.Vx(tir));
                 r_r3.pol.Vy(tir) = abs(r_r3.pol.Vy(tir));
                 r_r3.pol.Vz(tir) = abs(r_r3.pol.Vz(tir));
-
+                
                 r_t3.P(tir) = 0;
                 r_t3.v.Vx(tir) = real(r_t3.v.Vx(tir));
                 r_t3.v.Vy(tir) = real(r_t3.v.Vy(tir));
@@ -396,37 +370,21 @@ classdef Ray
                 r_t3.pol.Vz(tir) = abs(r_t3.pol.Vz(tir));
                 
                 % back rotation around z (-3)
-                % r4 = r3.zrotation(-phi3); %
-                % pl4 = pl3.zrotation(-phi3); %
-                % perp4 = perp3.zrotation(-phi3); %
-                % p4 = p3.zrotation(-phi3); %
                 r_r4 = r_r3.zrotation(-phi3);
                 r_t4 = r_t3.zrotation(-phi3);
                 
                 % back rotation around x (-2)
-                % r5 = r4.xrotation(-phi2); %
-                % pl5 = pl4.xrotation(-phi2); %
-                % perp5 = perp4.xrotation(-phi2); %
-                % p5 = p4.xrotation(-phi2); %
                 r_r5 = r_r4.xrotation(-phi2);
                 r_t5 = r_t4.xrotation(-phi2);
                 
                 % back rotation around z (-1)
-                % r6 = r5.zrotation(-phi1); %
-                % pl6 = pl5.zrotation(-phi1); %
-                % perp6 = perp5.zrotation(-phi1); %
-                % p6 = p5.zrotation(-phi1); %
                 r_r6 = r_r5.zrotation(-phi1);
                 r_t6 = r_t5.zrotation(-phi1);
                 
                 % back translation from origin (-0)
-                % rf = r6.translate(p); %
-                % plf = pl6.translate(p); %
-                % perpf = perp6.translate(p); %
-                % pf = p6.translate(p); %
                 r_r = r_r6.translate(p);
                 r_t = r_t6.translate(p);
-
+                
                 r_r.pol = r_r.pol.normalize();    % Change by Masoumeh and Agnese 2015-11-23
                 r_t.pol = r_t.pol.normalize();    % Change by Masoumeh and Agnese 2015-11-23
                 
@@ -439,9 +397,9 @@ classdef Ray
                 
                 % tangent plane
                 pl = Plane.perpto(ln,p);
-
+                
                 % Snell's law
-                [r_r,r_t,perp] = r.snellslaw(pl,n1,n2);
+                [r_r,r_t,perp,theta_i,cs,cp] = r.snellslaw(pl,n1,n2);
             end
         end
     end
@@ -464,9 +422,9 @@ classdef Ray
             
             Check.isnumeric('n1 must be a number',n1)
             Check.isnumeric('n2 must be a number',n2)
-
+            
             theta_t = asin(n1/n2*sin(theta_i));
-
+            
             rs = (n1*cos(theta_i)-n2*cos(theta_t)) ./ (n1*cos(theta_i)+n2*cos(theta_t));
             ts = 2*n1*cos(theta_i) ./ (n1*cos(theta_i)+n2*cos(theta_t));
             
@@ -491,12 +449,12 @@ classdef Ray
             %   tp  -   Fresnel transmission coefficient for electric field
             %
             % See also Ray.
-
+            
             Check.isnumeric('n1 must be a number',n1)
             Check.isnumeric('n2 must be a number',n2)
-
+            
             theta_t = asin(n1/n2*sin(theta_i));
-
+            
             rp = (n1*cos(theta_t)-n2*cos(theta_i)) ./ (n1*cos(theta_t)+n2*cos(theta_i));
             tp = ( 2*n1*cos(theta_i) ./ (n1*cos(theta_t)+n2*cos(theta_i)) );
             
@@ -506,7 +464,70 @@ classdef Ray
             % Rp = abs((n1*cos(theta_t)-n2*cos(theta_i))./(n1*cos(theta_t)+n2*cos(theta_i))).^2;
             Tp = 1-Rp;
         end
-        function res = beam2rays(b) 
+        function [Rs,Ts] = rtcoeffs_absorbingthinlayer(theta_i,n1,n2,n3,h,lambda0)
+            % RTCOEFFS_ABSORBINGTHINLAYER Fresnel coefficients in presence of absorption for s-polarized ray (Static)
+            %
+            % [Rs,Ts] = RTCOEFFS_ABSORBINGTHINLAYER(theta_i,n1,n2,n3,h,lambda0)
+            %   calculates the Fresnel coefficient in presence of an absorbing thin layer
+            %   between two transparent layers for an s-polarized ray impinging with
+            %   incidence angle theta_i on a planar surface. The refractive
+            %   indices of the incoming medium is n1, the one of the thin layer is n2,
+            %   and the one of the transmission medium n3. h is thickness of the thin layer and
+            %   lambda0 is the wavelength of the incident rays.
+            %
+            %   Rs  -   Fresnel reflection coefficient for power
+            %   Ts  -   Fresnel transmission coefficient for power
+            
+            %
+            % See also Ray.
+            
+            Check.isnumeric('n1 must be a number',n1)
+            Check.isnumeric('n2 must be a number',n2)
+            
+            theta2 = asin(n1*sin(theta_i)./n2); % refraction angle in thin layer
+            theta3 = asin(n2.*sin(theta2)./n3); % refraction angle in third medium
+            delta1 = 2*pi*n2*h*cos(theta2)./lambda0; % phase difference in passing from thin layer
+            % s polarization formula
+            eta0S = n1*cos(theta_i);
+            eta1S = n2*cos(theta2);
+            eta2S = n3*cos(theta3);
+            BS = cos(delta1)+1i*sin(delta1)./eta1S.*eta2S;
+            CS = 1i*sin(delta1).*eta1S+cos(delta1).*eta2S;
+            Rs = ((eta0S.*BS-CS)./(eta0S.*BS+CS)).*conj((eta0S.*BS-CS)./(eta0S.*BS+CS));
+            Ts = (4*eta0S.*real(eta2S))./((eta0S.*BS+CS).*conj(eta0S.*BS+CS));
+            % As = (4*eta0S.*real(BS.*conj(CS)-eta2S))./((eta0S.*BS+CS).*conj(eta0S.*BS+CS));
+        end
+        function [Rp,Tp] = rtcoeffp_absorbingthinlayer(theta_i,n1,n2,n3,h,lambda0)
+            % RTCOEFFP_ABSORBINGTHINLAYER Fresnel coefficients in presence of a thin absorption for p-polarized ray (Static)
+            %
+            % [Rp,Tp] = RTCOEFFP_ABSORBINGTHINLAYER(theta_i,n1,n2,n3,h,lambda0)
+            %   calculates the Fresnel coefficient in presence of an absorbing thin layer
+            %   between two transparent layers for an p-polarized ray impinging with
+            %   incidence angle theta_i on a planar surface. The refractive
+            %   indices of the incoming medium is n1, the one of the thin layer is n2,
+            %   and the one of the transmission medium n3. h is thickness of the thin layer and
+            %   lambda0 is the wavelength of the incident rays.
+            %
+            %   Rp  -   Fresnel reflection coefficient for power
+            %   Tp  -   Fresnel transmission coefficient for power
+            
+            % See also Ray.
+            
+            Check.isnumeric('n1 must be a number',n1)
+            Check.isnumeric('n2 must be a number',n2)
+            theta2 = asin(n1*sin(theta_i)./n2); % refraction angle in thin layer
+            theta3 = asin(n2.*sin(theta2)./n3); % refraction angle in third medium
+            delta1 = 2*pi*n2*h*cos(theta2)./lambda0; % phase difference in passing from thin layer
+            eta0P = n1./cos(theta_i);
+            eta1P = n2./cos(theta2);
+            eta2P = n3./cos(theta3);
+            BP = cos(delta1)+1i*sin(delta1)./eta1P.*eta2P;
+            CP = 1i*sin(delta1).*eta1P+cos(delta1).*eta2P;
+            Rp = ((eta0P.*BP-CP)./(eta0P.*BP+CP)).*conj((eta0P.*BP-CP)./(eta0P.*BP+CP));
+            Tp = (4*eta0P.*real(eta2P))./((eta0P.*BP+CP).*conj(eta0P.*BP+CP));
+            % Ap = (4*eta0P.*real(BP.*conj(CP)-eta2P))./((eta0P.*BP+CP).*conj(eta0P.*BP+CP));
+        end
+        function res = beam2rays(b)
             % BEAM2RAYS Set of rays describing a paraxial beam along +z (Static)
             %
             % R = BEAM2RAYS(B) coverts the beam B into the set of rays R
@@ -514,11 +535,11 @@ classdef Ray
             %   application in the xy-plane (z=0).
             %   All resulting rays are linearly polarized. Two linearly
             %   polarized rays are associated to each point, corresponding
-            %   to the two components of the electric field in quandrature 
+            %   to the two components of the electric field in quandrature
             %   of phase.
             %
             % See also Ray, Beam, BeamGauss, BeamHG, BeamLG.
-                        
+            
             if nargin<3
                 z1 = 0;
                 z2 = 1e-6;
@@ -531,7 +552,7 @@ classdef Ray
             Vy = 0*b.r;
             Vz = ones(size(b.r));
             v = Vector([X;X],[Y;Y],[Z;Z],[Vx;Vx],[Vy;Vy],[Vz;Vz]);
-
+            
             [Ex,Ey] = Transform.Pol2CarVector(b.phi,b.Ephi,b.Er);
             pol = Vector([X;X],[Y;Y],[Z;Z],[real(Ex);imag(Ex)],[real(Ey);imag(Ey)],0*[b.r;b.r]);
             
@@ -539,10 +560,10 @@ classdef Ray
             dphi = b.phi(2,1)-b.phi(1,1);
             P = b.intensity().*b.r*dr*dphi;
             P = [ P .* (real(Ex).^2 + real(Ey).^2) ./ (abs(Ex).^2+abs(Ey).^2); P .* (imag(Ex).^2 + imag(Ey).^2) ./ (abs(Ex).^2+abs(Ey).^2)];  % V 1.0.2
-
+            
             res = Ray(v,P,pol);
         end
-        function res = beam2focused(b,f) 
+        function res = beam2focused(b,f)
             % BEAM2FOCUSED Set of rays focused to (0,0,0) along +z by a lens with focal length f (Static)
             %
             % R = BEAM2FOCUSED(B,F) coverts the beam B into the set of rays R
@@ -551,15 +572,15 @@ classdef Ray
             %   on a spherical surface centered in (0,0,0) and with radius F.
             %   All resulting rays are linearly polarized. Two linearly
             %   polarized rays are associated to each point, corresponding
-            %   to the two components of the electric field in quandrature 
+            %   to the two components of the electric field in quandrature
             %   of phase.
             %
             % See also Ray, Beam, BeamGauss, BeamHG, BeamLG.
             
             Check.isreal('f must be a positive real number',f,'>',0)
-
+            
             res = Ray.beam2rays(b);
-
+            
             r = sqrt(res.v.X.^2 + res.v.Y.^2);
             theta = asin(r/f);
             
