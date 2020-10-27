@@ -29,14 +29,22 @@ classdef Ray
     % Ray static methods:
     %   rtcoeffs        -   Fresnel coefficient for s-polarization
     %   rtcoeffp        -   Fresnel coefficient for p-polarization
+    %   rtcoeffs_thinabsorbinglayer        
+    %                   -   Fresnel coefficient for s-polarization when
+    %                       a thin absorbing layer is set between the
+    %                       incidence and transmission medium
+    %   rtcoeffp_thinabsorbinglayer 
+    %                   -   Fresnel coefficient for s-polarization when
+    %                       a thin absorbing layer is set between the
+    %                       incidence and transmission medium
     %   beam2rays       -   converts a beam to a ray set
     %   beam2focused    -   converts a beam to a focused ray set
     %   
     % See also Vector, Beam.
 
     %   Author: Giovanni Volpe
-    %   Revision: 1.0.0
-    %   Date: 2015/01/01
+    %   Modifications: Agnese Callegari
+    %   Date: 2020/10/27
     
     properties
         v       % directions (Vector)
@@ -249,16 +257,18 @@ classdef Ray
 
             ln = r.v.toline();
         end
-        function [r_r,r_t,perp] = snellslaw(r,s,n1,n2,n)
+        function [r_r,r_t,perp,theta_i,cs,cp] = snellslaw(r,s,n1,n2,n)
             % SNELLSLAW Snell's law: reflected and transmitted rays at a surface
             %
-            % [Rr,Rt,PERP] = SNELLSLAW(R,S,n1,n2) calculates the reflected
-            %   ray Rr, and the transmitted ray set Rt and the
-            %   perpendicular line set PERP for a ray set R incident to a
-            %   superficies S. n1 and n2 represents the refractive index
+            % [Rr,Rt,PERP,THETA_i,cs,cp] = SNELLSLAW(R,S,n1,n2) calculates 
+            %   the reflected ray Rr, the transmitted ray set Rt, the
+            %   perpendicular line set PERP, the incidence angles THETA_I,
+            %   and the coefficients cs,cp of the s- and p-components for 
+            %   a ray set R incident to a superficies S. 
+            %   n1 and n2 represents the refractive index
             %   in the incoming medium and in the transmission medium.
             %
-            % [Rr,Rt,PERP] = SNELLSLAW(R,S,n1,n2,n) n [default = 1]
+            % [Rr,Rt,PERP,THETA_i,cs,cp] = SNELLSLAW(R,S,n1,n2,n) n [default = 1]
             % 	defines what intersaction between the ray and the surface
             % 	should be used.
             %
@@ -282,9 +292,6 @@ classdef Ray
                                 
                 % Incidence angle
                 theta_i = angle(r.toline(),perp);
-                % if theta_i>pi/2
-                %     theta_i = pi - theta_i;
-                % end
                 theta_i(theta_i>pi/2) = -theta_i(theta_i>pi/2) + pi;
                 
                 % Transmission angle
@@ -292,30 +299,20 @@ classdef Ray
                
                 % translation to origin (0)
                 r0 = r.translate(-p);
-                % pl0 = pl.translate(-p); %
                 perp0 = perp.translate(-p);
-                % p0 = p.translate(-p); %
                 
                 % rotation around z (1)
                 phi1 = atan2(perp0.p2.X,perp0.p2.Y);
                 r1 = r0.zrotation(phi1);
-                % pl1 = pl0.zrotation(phi1); %
                 perp1 = perp0.zrotation(phi1);
-                % p1 = p0.zrotation(phi1); %
-                
+
                 % rotation around x (2)
                 phi2 = atan2(perp1.p2.Y,perp1.p2.Z);
                 r2 = r1.xrotation(phi2);
-                % pl2 = pl1.xrotation(phi2); %
-                % perp2 = perp1.xrotation(phi2); %
-                % p2 = p1.xrotation(phi2); %
                 
                 % rotation around z (3)
                 phi3 = atan2(r2.v.X,r2.v.Y);
                 r3 = r2.zrotation(phi3);
-                % pl3 = pl2.zrotation(phi3); %
-                % perp3 = perp2.zrotation(phi3); %
-                % p3 = p2.zrotation(phi3); %
                 
                 % Rs and Ts (applies to r3.pol.Vx)
                 [Rs,Ts,rs,ts] = Ray.rtcoeffs(theta_i,n1,n2);
@@ -324,11 +321,6 @@ classdef Ray
                 [Rp,Tp,rp,tp] = Ray.rtcoeffp(theta_i,n1,n2);
 
                 % reflected ray
-                % if r3.v.Z>0
-                %     r_r3 = -r3.xrotation(2*theta_i);
-                % else
-                %     r_r3 = -r3.xrotation(-2*theta_i);
-                % end
                 dtheta = 2*theta_i;
                 dtheta(r3.v.Z<0) = -dtheta(r3.v.Z<0);
                 r_r3 = -r3.xrotation(dtheta);
@@ -350,15 +342,6 @@ classdef Ray
                 r_r3.pol.Z = zeros(size(r));
 
                 % transmitted ray
-                % if r3.v.Z>0
-                %     r_t3 = -r3.xrotation(-pi+theta_i-theta_t);
-                %     r_t3.pol.Vy = -r_t3.pol.Vy;
-                %     r_t3.pol.Vz = -r_t3.pol.Vz;
-                % else
-                %     r_t3 = -r3.xrotation(pi-theta_i+theta_t);
-                %     r_t3.pol.Vy = -r_t3.pol.Vy;
-                %     r_t3.pol.Vz = -r_t3.pol.Vz;
-                % end
                 dtheta = -pi+theta_i-theta_t;
                 dtheta(r3.v.Z<0) = -dtheta(r3.v.Z<0);
                 r_t3 = -r3.xrotation(real(dtheta));
@@ -396,34 +379,18 @@ classdef Ray
                 r_t3.pol.Vz(tir) = abs(r_t3.pol.Vz(tir));
                 
                 % back rotation around z (-3)
-                % r4 = r3.zrotation(-phi3); %
-                % pl4 = pl3.zrotation(-phi3); %
-                % perp4 = perp3.zrotation(-phi3); %
-                % p4 = p3.zrotation(-phi3); %
                 r_r4 = r_r3.zrotation(-phi3);
                 r_t4 = r_t3.zrotation(-phi3);
                 
                 % back rotation around x (-2)
-                % r5 = r4.xrotation(-phi2); %
-                % pl5 = pl4.xrotation(-phi2); %
-                % perp5 = perp4.xrotation(-phi2); %
-                % p5 = p4.xrotation(-phi2); %
                 r_r5 = r_r4.xrotation(-phi2);
                 r_t5 = r_t4.xrotation(-phi2);
                 
                 % back rotation around z (-1)
-                % r6 = r5.zrotation(-phi1); %
-                % pl6 = pl5.zrotation(-phi1); %
-                % perp6 = perp5.zrotation(-phi1); %
-                % p6 = p5.zrotation(-phi1); %
                 r_r6 = r_r5.zrotation(-phi1);
                 r_t6 = r_t5.zrotation(-phi1);
                 
                 % back translation from origin (-0)
-                % rf = r6.translate(p); %
-                % plf = pl6.translate(p); %
-                % perpf = perp6.translate(p); %
-                % pf = p6.translate(p); %
                 r_r = r_r6.translate(p);
                 r_t = r_t6.translate(p);
 
@@ -506,6 +473,71 @@ classdef Ray
             % Rp = abs((n1*cos(theta_t)-n2*cos(theta_i))./(n1*cos(theta_t)+n2*cos(theta_i))).^2;
             Tp = 1-Rp;
         end
+        function [Rs,Ts] = rtcoeffs_thinabsorbinglayer(theta_i,n1,n2,n3,h,lambda0)
+            % RTCOEFFS_THINABSORBINGLAYER Fresnel coefficients in presence of absorption for s-polarized ray (Static)
+            %
+            % [Rs,Ts,As] = RTCOEFFS_THINABSORBINGLAYER(theta_i,n1,n2,n3,h,lambda0)
+            %   calculates the Fresnel coefficient in presence of an absorbing thin layer set between two transparent layers
+            %   for an s-polarized ray impinging with
+            %   incidence angle theta_i on a planar surface. The refractive
+            %   indices of the incoming medium is n1, thin layer n2 and the one of the
+            %   transmission medium n3. h is thickness of the thin layer and
+            %   lambda0 is wavelength of the incident rays.
+            %
+            %   Rs  -   Fresnel reflection coefficient of ray
+            %   Ts  -   Fresnel transmission coefficient of ray
+            %   As  -   Fresnel absorption coefficient of ray
+            
+            %
+            % See also Ray.
+            
+            Check.isnumeric('n1 must be a number',n1)
+            Check.isnumeric('n2 must be a number',n2)
+            
+            theta2 = asin(n1*sin(theta_i)./n2); % refraction angle in thin layer
+            theta3 = asin(n2.*sin(theta2)./n3); % refraction angle in third medium
+            delta1 = 2*pi*n2*h*cos(theta2)./lambda0; % phase difference in passing from thin layer
+            % s polarization formula
+            eta0S = n1*cos(theta_i);
+            eta1S = n2*cos(theta2);
+            eta2S = n3*cos(theta3);
+            BS = cos(delta1)+1i*sin(delta1)./eta1S.*eta2S;
+            CS = 1i*sin(delta1).*eta1S+cos(delta1).*eta2S;
+            Rs = ((eta0S.*BS-CS)./(eta0S.*BS+CS)).*conj((eta0S.*BS-CS)./(eta0S.*BS+CS));
+            Ts = (4*eta0S.*real(eta2S))./((eta0S.*BS+CS).*conj(eta0S.*BS+CS));
+            % As = (4*eta0S.*real(BS.*conj(CS)-eta2S))./((eta0S.*BS+CS).*conj(eta0S.*BS+CS));
+        end
+        function [Rp,Tp] = rtcoeffp_thinabsorbinglayer(theta_i,n1,n2,n3,h,lambda0)
+            % RTCOEFFP_THINABSORBINGLAYER Fresnel coefficients in presence of a thin absorption for p-polarized ray (Static)
+            %
+            % [Rp,Tp,Ap] = RTCOEFFP_THINABSORBINGLAYER(theta_i,n1,n2,n3,h,lambda0)
+            %   calculates the Fresnel coefficient in presence of an absorbing thin layer set between two transparent layers
+            %   for an p-polarized ray impinging with
+            %   incidence angle theta_i on a planar surface. The refractive
+            %   indices of the incoming medium is n1, thin layer n2 and the one of the
+            %   transmission medium n3. h is thickness of the thin layer and
+            %   lambda0 is wavelength of the incident rays.
+            %
+            %   Rp  -   Fresnel reflection coefficient of ray
+            %   Tp  -   Fresnel transmission coefficient of ray
+            %   Ap  -   Fresnel absorption coefficient of ray
+            
+            % See also Ray.
+            
+            Check.isnumeric('n1 must be a number',n1)
+            Check.isnumeric('n2 must be a number',n2)
+            theta2 = asin(n1*sin(theta_i)./n2); % refraction angle in thin layer
+            theta3 = asin(n2.*sin(theta2)./n3); % refraction angle in third medium
+            delta1 = 2*pi*n2*h*cos(theta2)./lambda0; % phase difference in passing from thin layer
+            eta0P = n1./cos(theta_i);
+            eta1P = n2./cos(theta2);
+            eta2P = n3./cos(theta3);
+            BP = cos(delta1)+1i*sin(delta1)./eta1P.*eta2P;
+            CP = 1i*sin(delta1).*eta1P+cos(delta1).*eta2P;
+            Rp = ((eta0P.*BP-CP)./(eta0P.*BP+CP)).*conj((eta0P.*BP-CP)./(eta0P.*BP+CP));
+            Tp = (4*eta0P.*real(eta2P))./((eta0P.*BP+CP).*conj(eta0P.*BP+CP));
+            % Ap = (4*eta0P.*real(BP.*conj(CP)-eta2P))./((eta0P.*BP+CP).*conj(eta0P.*BP+CP));     
+        end       
         function res = beam2rays(b) 
             % BEAM2RAYS Set of rays describing a paraxial beam along +z (Static)
             %
